@@ -4,28 +4,38 @@ import 'package:sqflite_demo/db_helper.dart';
 import 'package:sqflite_demo/task/helpers/db_helper_tasks.dart';
 import 'package:sqflite_demo/task/taskList.dart';
 import 'package:sqflite_demo/task/constraints.dart';
+import 'package:sqflite_demo/tester.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-void main() => runApp(MyApp());
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  var initializationSettingsAndriod = AndroidInitializationSettings('i_manage');
+
+
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SQFlite Demo',
-      theme:  ThemeData(
-        appBarTheme:AppBarTheme(
-          centerTitle:true,
-          elevation:0.5,
-          color:kWhite1Color
-          
-        ),
-        primarySwatch:Colors.pink,
-        scaffoldBackgroundColor:kWhite1Color,
+      theme: ThemeData(
+        appBarTheme:
+            AppBarTheme(centerTitle: true, elevation: 0.5, color: kWhite1Color),
+        primarySwatch: Colors.pink,
+        scaffoldBackgroundColor: kWhite1Color,
         // primarySwatch: Colors.blue,
         // visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       // home: MyHomePage(),
-      home:TaskList(),
+      home: TaskList(),
+      // home:DateTimePicker(),
     );
   }
 }

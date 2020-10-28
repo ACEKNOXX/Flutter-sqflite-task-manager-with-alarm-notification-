@@ -24,7 +24,7 @@ class _TaskTabState extends State<TaskTab> {
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 7.0),
         padding: EdgeInsets.all(8.0),
-        height: 70.0,
+        height: 150.0,
         decoration: BoxDecoration(
           color: widget.colour,
           borderRadius: BorderRadius.circular(10.0),
@@ -43,10 +43,7 @@ class _TaskTabState extends State<TaskTab> {
                     SizedBox(
                       height: 10.0,
                     ),
-                    // Text(
-                    //   widget.title,
-                    //   style: ktaskTabTitleStyle,
-                    // )
+                    
                     Flexible(
                       child: RichText(
                         overflow: TextOverflow.ellipsis,
@@ -59,24 +56,7 @@ class _TaskTabState extends State<TaskTab> {
                 ),
               ),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  child: Row(
-                    children: [
-                      Switch(
-                          value: widget.status,
-                          onChanged: (val) {
-                            setState(() {
-                              // widget.status =
-                            });
-                          })
-                    ],
-                  ),
-                ),
-              ],
-            )
+            
           ],
         ),
       ),

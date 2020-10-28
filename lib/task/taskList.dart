@@ -83,7 +83,7 @@ class _TaskListState extends State<TaskList> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: 150.0,
+                height: 80.0,
                 child: Column(
                   children: [
                     Row(
@@ -96,40 +96,6 @@ class _TaskListState extends State<TaskList> {
                               fontSize: 50.0,
                               fontWeight: FontWeight.bold),
                         ))
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (val) =>
-                                  val.isEmpty ? 'required' : null,
-                              onChanged: (val) {
-                                setState(() => searchTask = val);
-                              },
-                              decoration: InputDecoration(
-                                suffixIcon: Icon(
-                                  Icons.search,
-                                  color: kBlackColor,
-                                ),
-                                // hintText: "Location",
-                                hintStyle: TextStyle(color: Colors.grey),
-                                filled: true,
-                                fillColor: kWhiteColor,
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: kWhite1Color),
-                                    borderRadius: BorderRadius.circular(50.0)),
-                                border: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Color(0xFF212121)),
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: kWhiteColor, width: 5.0),
-                                    borderRadius: BorderRadius.circular(20.0)),
-                              )),
-                        )
                       ],
                     ),
                   ],

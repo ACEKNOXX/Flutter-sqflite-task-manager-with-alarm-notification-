@@ -13,6 +13,6 @@ const kBlackDarkColor = Color(0xFF212121);
 
 const ktaskTabDateStyle = TextStyle(color: kWhite2Color, fontSize: 10.0);
 const ktaskTabTitleStyle =
-    TextStyle(color: kWhite1Color, fontSize: 20.0, fontWeight: FontWeight.bold);
+    TextStyle(color: kWhite1Color, fontSize:35.0, fontWeight: FontWeight.bold);
 const ktodoTabTitleStyle =
     TextStyle(color: kWhite1Color, fontSize: 15.0, fontWeight: FontWeight.bold);

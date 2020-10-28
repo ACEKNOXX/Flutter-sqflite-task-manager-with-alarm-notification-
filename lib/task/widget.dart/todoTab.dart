@@ -8,27 +8,38 @@ class Todo extends StatefulWidget {
   final title;
   final date;
   final status;
-  Todo({this.id,this.colour, this.title, this.status, this.date});
+  final onpressed;
+  Todo(
+      {this.id,
+      this.colour,
+      this.title,
+      this.status,
+      this.date,
+      this.onpressed});
   @override
   _TodoState createState() => _TodoState();
 }
 
 class _TodoState extends State<Todo> {
-
   @override
   Widget build(BuildContext context) {
-     return InkWell(
+    return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => TodoList(taskListId:widget.id,taskTitle:widget.title)));
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    TodoList(taskListId: widget.id, taskTitle: widget.title)));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 7.0),
-        padding: EdgeInsets.symmetric(horizontal:8.0,),
+        padding: EdgeInsets.symmetric(
+          horizontal: 8.0,
+        ),
         height: 50.0,
         decoration: BoxDecoration(
           color: widget.colour,
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(5.0),
         ),
         child: Row(
           children: [
@@ -44,13 +55,10 @@ class _TodoState extends State<Todo> {
                     SizedBox(
                       height: 10.0,
                     ),
-                    
-                    Flexible(
-                      child: RichText(
-                        overflow: TextOverflow.ellipsis,
-                        strutStyle: StrutStyle(fontSize: 12.0),
-                        text: TextSpan(
-                            style: ktaskTabTitleStyle, text: widget.title),
+                    Expanded(
+                      child: Text(
+                        widget.title,
+                        style: ktodoTabTitleStyle,
                       ),
                     ),
                   ],
@@ -62,14 +70,16 @@ class _TodoState extends State<Todo> {
               children: [
                 Container(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Switch(
-                          value: widget.status,
-                          onChanged: (val) {
-                            setState(() {
-                              // widget.status =
-                            });
-                          })
+                      Checkbox(
+                        value: false,
+                        onChanged: (val) {},
+                      ),
+                      IconButton(
+                          onPressed: widget.onpressed,
+                          icon: Icon(Icons.delete,
+                              color: Colors.grey, size: 15.0))
                     ],
                   ),
                 ),
