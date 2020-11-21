@@ -30,47 +30,45 @@ class _TaskListState extends State<TaskList> {
 
   @override
   Widget build(BuildContext context) {
-
     var currDt = new DateTime.now();
     var now = "${currDt.day}/${currDt.month}/${currDt.year}";
+    var nowTask = DateFormat.yMMMMEEEEd().format(currDt);
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          Container(
-            child: IconButton(
-                color: kDangerColor,
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text("Add task"),
-                          content: TextFormField(
-                            decoration: InputDecoration(hintText: "Task title"),
-                            onChanged: (val) {
-                              setState(() {
-                                task = val;
-                              });
-                            },
-                          ),
-                          actions: [
-                            FlatButton(
-                              onPressed: _insert,
-                              child: Text("add task"),
-                            ),
-                            FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text("Cancel"))
-                          ],
-                        );
+        actions: [],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Add task"),
+                  content: TextFormField(
+                    decoration: InputDecoration(hintText: "Task title"),
+                    onChanged: (val) {
+                      setState(() {
+                        task = val;
                       });
-                }),
-          )
-        ],
+                    },
+                  ),
+                  actions: [
+                    FlatButton(
+                      onPressed: () {
+                        _insert(nowTask);
+                      },
+                      child: Text("add task"),
+                    ),
+                    FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel"))
+                  ],
+                );
+              });
+        },
+        child: Icon(Icons.add),
       ),
       body: SafeArea(
         child: Container(
@@ -112,7 +110,8 @@ class _TaskListState extends State<TaskList> {
                   )
                 ],
               ),
-              Text("Today:${now}"),
+              // Text("Today:${now}"),
+              Text("${nowTask}"),
               Expanded(
                 child: SizedBox(
                   child: ListView.builder(
@@ -121,12 +120,12 @@ class _TaskListState extends State<TaskList> {
                         var i = savedTasks.length - index;
                         var indx = i - 1;
                         // print(index);
-                        print(indx);
+                        // print(indx);
                         return TaskTab(
                           id: savedTasks[indx].id,
                           colour: Color(0xFF212121),
                           title: savedTasks[indx].title,
-                          date: "20 Aug 2020",
+                          date: savedTasks[indx].created_at,
                           status: false,
                         );
                       }),
@@ -140,7 +139,7 @@ class _TaskListState extends State<TaskList> {
     );
   }
 
-  void _insert() async {
+  void _insert(nownow) async {
     if (task == null) {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text("Address is not well formatted"),
@@ -151,10 +150,11 @@ class _TaskListState extends State<TaskList> {
     // row to insert
     Map<String, dynamic> row = {
       DatabaseHelperTask.columnTitle: task,
-      DatabaseHelperTask.columnStatus: 23
+      DatabaseHelperTask.columnStatus: 0,
+      DatabaseHelperTask.columnCreated_at:nownow
     };
     final id = await dbHelperTask.insert(row);
-    print('inserted row id: $id');
+    // print('inserted row id: $id');
     setState(() {
       task = null;
     });
@@ -172,11 +172,21 @@ class _TaskListState extends State<TaskList> {
     print('query all rows:');
     allRows.forEach((row) {
       var tasksModel =
-          TaskModel(id: row['_id'], title: row['task'], status: row['status']);
+          TaskModel(
+            id: row['_id'], 
+            title: row['task'], 
+            status: row['status'],
+            created_at: row['created_at']
+          );
       savedTasks.add(tasksModel);
     });
     if (savedTasks.length == 0) {
-      var tasksModell = TaskModel(id: "0", title: "Welcome", status: "0");
+      var tasksModell = TaskModel(
+        id: "0",
+        title: "Welcome", 
+        status: "0",
+        created_at:""
+      );
       savedTasks.add(tasksModell);
       print(savedTasks);
     }
@@ -199,6 +209,6 @@ class _TaskListState extends State<TaskList> {
     // Assuming that the number of rows is the id for the last row.
     final id = await dbHelperTask.queryRowCount();
     final rowsDeleted = await dbHelperTask.delete(id);
-    print('deleted $rowsDeleted row(s): row $id');
+    // print('deleted $rowsDeleted row(s): row $id');
   }
 }

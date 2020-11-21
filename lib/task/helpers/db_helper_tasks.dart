@@ -12,10 +12,12 @@ class DatabaseHelperTask {
   static final columnId = '_id';
   static final columnTitle = 'task';
   static final columnStatus = 'status';
+  static final columnCreated_at = 'created_at';
 
   // make this a singleton class
   DatabaseHelperTask._privateConstructor();
-  static final DatabaseHelperTask instance = DatabaseHelperTask._privateConstructor();
+  static final DatabaseHelperTask instance =
+      DatabaseHelperTask._privateConstructor();
 
   // only have a single app-wide reference to the database
   static Database _database;
@@ -25,29 +27,28 @@ class DatabaseHelperTask {
     _database = await _initDatabase();
     return _database;
   }
-   // this opens the database (and creates it if it doesn't exist)
+
+  // this opens the database (and creates it if it doesn't exist)
   _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
-        version: _databaseVersion,
-        onCreate: _onCreate);
+        version: _databaseVersion, onCreate: _onCreate);
   }
 
-  
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $table (
         $columnId INTEGER PRIMARY KEY,
         $columnTitle TEXT NOT NULL,
-        $columnStatus INTEGER NOT NULL
+        $columnStatus INTEGER NOT NULL,
+        $columnCreated_at TEXT NOT NULL
       )
-      '''
-    );
+      ''');
   }
 
-   // Helper methods
+  // Helper methods
 
   // Inserts a row in the database where each key in the Map is a column name
   // and the value is the column value. The return value is the id of the
@@ -69,13 +70,12 @@ class DatabaseHelperTask {
   //   return await db.rawQuery('SELECT * FROM $table');
   // }
 
-  
-
   // All of the methods (insert, query, update, delete) can also be done using
   // raw SQL commands. This method uses a raw query to give the row count.
   Future<int> queryRowCount() async {
     Database db = await instance.database;
-    return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $table'));
+    return Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM $table'));
   }
 
   // We are assuming here that the id column in the map is set. The other
@@ -92,6 +92,4 @@ class DatabaseHelperTask {
     Database db = await instance.database;
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
-
-
 }
