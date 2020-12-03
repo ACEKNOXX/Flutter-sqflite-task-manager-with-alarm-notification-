@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../todolist.dart';
 import '../constraints.dart';
+import 'package:sqflite_demo/task/helpers/db_helper_todos.dart';
+import 'package:sqflite_demo/task/helpers/db_helper_tasks.dart';
 
 class Todo extends StatefulWidget {
   final id;
@@ -9,18 +11,22 @@ class Todo extends StatefulWidget {
   final date;
   final status;
   final onpressed;
+  final checkBoxPress;
   Todo(
       {this.id,
       this.colour,
       this.title,
       this.status,
       this.date,
-      this.onpressed});
+      this.onpressed,
+      this.checkBoxPress
+      });
   @override
   _TodoState createState() => _TodoState();
 }
 
 class _TodoState extends State<Todo> {
+  final dbHelperTodo = DatabaseHelperTodos.instance;
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -65,29 +71,31 @@ class _TodoState extends State<Todo> {
                 ),
               ),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Checkbox(
-                        value: false,
-                        onChanged: (val) {},
-                      ),
-                      IconButton(
-                          onPressed: widget.onpressed,
-                          icon: Icon(Icons.delete,
-                              color: Colors.grey, size: 15.0))
-                    ],
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FlatButton(
+                    onPressed:widget.checkBoxPress,
+                    child: Checkbox(
+                      focusColor: Colors.red,
+                      value: true,
+                      onChanged: (val) {
+                        print("djc");
+                      },
+                    ),
                   ),
-                ),
-              ],
-            )
+                  IconButton(
+                      onPressed: widget.onpressed,
+                      icon: Icon(Icons.delete, color: Colors.grey, size: 15.0))
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+
+  
 }

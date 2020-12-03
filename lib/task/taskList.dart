@@ -33,108 +33,111 @@ class _TaskListState extends State<TaskList> {
     var currDt = new DateTime.now();
     var now = "${currDt.day}/${currDt.month}/${currDt.year}";
     var nowTask = DateFormat.yMMMMEEEEd().format(currDt);
-    return Scaffold(
-      appBar: AppBar(
-        actions: [],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text("Add task"),
-                  content: TextFormField(
-                    decoration: InputDecoration(hintText: "Task title"),
-                    onChanged: (val) {
-                      setState(() {
-                        task = val;
-                      });
-                    },
-                  ),
-                  actions: [
-                    FlatButton(
-                      onPressed: () {
-                        _insert(nowTask);
+    return WillPopScope(
+        onWillPop: () => Future.value(false),
+        child: Scaffold(
+      
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Add task"),
+                    content: TextFormField(
+                      decoration: InputDecoration(hintText: "Task title"),
+                      onChanged: (val) {
+                        setState(() {
+                          task = val;
+                        });
                       },
-                      child: Text("add task"),
                     ),
-                    FlatButton(
+                    actions: [
+                      FlatButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          _insert(nowTask);
                         },
-                        child: Text("Cancel"))
-                  ],
-                );
-              });
-        },
-        child: Icon(Icons.add),
-      ),
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 10.0,
-          ),
-          // child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 80.0,
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                            child: Text(
-                          "Taskslist",
-                          style: TextStyle(
-                              fontFamily: "PTSans",
-                              fontSize: 50.0,
-                              fontWeight: FontWeight.bold),
-                        ))
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              // TaskTab()
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FlatButton.icon(
-                    onPressed: _query,
-                    icon: Icon(Icons.refresh),
-                    label: Text("refresh"),
-                  )
-                ],
-              ),
-              // Text("Today:${now}"),
-              Text("${nowTask}"),
-              Expanded(
-                child: SizedBox(
-                  child: ListView.builder(
-                      itemCount: savedTasks.length,
-                      itemBuilder: (BuildContext context, index) {
-                        var i = savedTasks.length - index;
-                        var indx = i - 1;
-                        // print(index);
-                        // print(indx);
-                        return TaskTab(
-                          id: savedTasks[indx].id,
-                          colour: Color(0xFF212121),
-                          title: savedTasks[indx].title,
-                          date: savedTasks[indx].created_at,
-                          status: false,
-                        );
-                      }),
-                ),
-              )
-            ],
-          ),
+                        child: Text("add task"),
+                      ),
+                      FlatButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Cancel"))
+                    ],
+                  );
+                });
+          },
+          child: Icon(Icons.add),
         ),
-        // )
+        body: SafeArea(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 10.0,
+              vertical:20.0
+            ),
+            // child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 80.0,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                              child: Text(
+                            "Taskslist",
+                            style: TextStyle(
+                                fontFamily: "PTSans",
+                                fontSize: 50.0,
+                                fontWeight: FontWeight.bold),
+                          ))
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                // TaskTab()
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FlatButton.icon(
+                      onPressed: _query,
+                      icon: Icon(Icons.refresh),
+                      label: Text("refresh"),
+                    )
+                  ],
+                ),
+                // Text("Today:${now}"),
+                Text("${nowTask}"),
+                SizedBox(height:10.0),
+                Expanded(
+                  child: SizedBox(
+                    child: ListView.builder(
+                        itemCount: savedTasks.length,
+                        itemBuilder: (BuildContext context, index) {
+                          var i = savedTasks.length - index;
+                          var indx = i - 1;
+                          // print(index);
+                          // print(indx);
+                          return TaskTab(
+                            id: savedTasks[indx].id,
+                            colour: Color(0xFF212121),
+                            title: savedTasks[indx].title,
+                            date: savedTasks[indx].created_at,
+                            status: false,
+                          );
+                        }),
+                  ),
+                )
+              ],
+            ),
+          ),
+          // )
+        ),
       ),
     );
   }

@@ -6,7 +6,6 @@ import 'package:sqflite_demo/task/helpers/db_helper_tasks.dart';
 import 'package:sqflite_demo/task/models/todoModel.dart';
 import 'package:sqflite_demo/task/taskList.dart';
 import 'package:sqflite_demo/task/widget.dart/todoTab.dart';
-import 'package:sqflite_demo/task/addTodos.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'widget.dart/taskTab.dart';
 import 'constraints.dart';
@@ -22,6 +21,9 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   _TodoListState({this.taskId});
   final taskId;
+  String _title;
+  var selectedDate="0000-00-00";
+  int _value = 1;
 
   DateTime _date = DateTime.now();
   TextEditingController _dateController = TextEditingController();
@@ -66,21 +68,124 @@ class _TodoListState extends State<TodoList> {
             child: Icon(Icons.chevron_left, size: 25.0, color: kBlackColor),
           ),
         ),
-        actions: [
-          Container(
-            child: IconButton(
-                color: kDangerColor,
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddTodos(
-                              taskId: taskId, taskTitle: widget.taskTitle)));
-                }),
-          )
-        ],
+        
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Add todos"),
+                    content: Container(
+                      height:400.0,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            decoration: InputDecoration(hintText: "Task title"),
+                            onChanged: (val) {
+                              setState(() {
+                                _title = val;
+                              });
+                            },
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6.0),
+                                    color: kWhiteColor,
+                                    // border: Border.all()
+                                  ),
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton(
+                                        value: _value,
+                                        items: [
+                                          DropdownMenuItem(
+                                            child: Text("Low "),
+                                            value: 1,
+                                          ),
+                                          DropdownMenuItem(
+                                            child: Text("Medium"),
+                                            value: 2,
+                                          ),
+                                          DropdownMenuItem(
+                                              child: Text("High"), value: 3),
+                                        ],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _value = value;
+                                          });
+                                        }),
+                                  ),
+                                ),
+                              ),
+                              
+                            ],
+                          ),
+                          // FlatButton(
+                          //   child: Container(
+                             
+                          //     child: Row(
+                          //         mainAxisAlignment:
+                          //             MainAxisAlignment
+                          //                 .start,
+                          //         children: [
+                          //           Text(
+                          //               "${selectedDate.toString()}")
+                          //         ]),
+                          //   ),
+                          //   onPressed: () async {
+                          //     DateTime date =
+                          //         await showDatePicker(
+                          //             context: context,
+                          //             initialDate:
+                          //                 DateTime.now(),
+                          //             firstDate:
+                          //                 DateTime(1964),
+                          //             lastDate: DateTime
+                          //                     .now()
+                          //                 .add(Duration(
+                          //                     days: 1)));
+
+                          //     if (date != null) {
+                          //       var dat = date.toString();
+                          //       var datz = dat.split(" ");
+                          //       dat = datz[0];
+                          //       print(dat);
+                          //       setState(() {
+                          //         selectedDate = dat;
+                          //       });
+                          //     }
+                          //   },
+                          // )
+                        
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      FlatButton(
+                        onPressed: () {
+                          // _insert(nowTask);
+                          _submit();
+                          Navigator.pop(context);
+                        },
+                        child: Text("Submit"),
+                      ),
+                      FlatButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Cancel"))
+                    ],
+                  );
+                });
+          },
+          child: Icon(Icons.add)),
       body: SafeArea(
           child: Container(
         padding: EdgeInsets.symmetric(
@@ -172,12 +277,17 @@ class _TodoListState extends State<TodoList> {
                           title: savedTasks[indx].todoTitle,
                           date: "",
                           status: false,
-                          onpressed: () async{
+                          checkBoxPress:() async{
+                            // await _update(taskId, title, priorities,status);
+                          },
+                          onpressed: () async {
                             int id = savedTasks[indx].id;
                             print("Index ${savedTasks[indx].id}");
                             await _deleteIdOne(id);
                             Navigator.push(
-                            context, MaterialPageRoute(builder: (context) =>TaskList()  ));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TaskList()));
                           });
                     }),
               ),
@@ -186,6 +296,38 @@ class _TodoListState extends State<TodoList> {
         ),
       )),
     );
+  }
+
+  void _insert() async {
+    if (todo == null) {}
+
+    // row to insert
+    Map<String, dynamic> row = {
+      DatabaseHelperTodos.columnTaskListId: taskId,
+      DatabaseHelperTodos.columnTodoTitle: _title,
+      DatabaseHelperTodos.columnPriority: _priorities[_value],
+      DatabaseHelperTodos.columnStatus: 0
+    };
+    final id = await dbHelperTodo.insert(row);
+    print('inserted row id: $id');
+    setState(() {
+      todo = null;
+    });
+  }
+
+  _submit() async {
+    print("$_title $_date $_value");
+    print("task list id =$taskId");
+
+    // insert the todo to use db
+    await _insert();
+    await _query();
+    // Update the task
+    // Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (contex) =>
+    //               TaskList()));
   }
 
   void _query() async {
@@ -210,14 +352,15 @@ class _TodoListState extends State<TodoList> {
     print(savedTasks.length);
   }
 
-  void _update() async {
+  void _update(taskId, title, priorities, status) async {
     // row to update
     Map<String, dynamic> row = {
-      DatabaseHelperTask.columnId: 1,
-      DatabaseHelperTask.columnTitle: 'Mary',
-      DatabaseHelperTask.columnStatus: 32
+      DatabaseHelperTodos.columnTaskListId: taskId,
+      DatabaseHelperTodos.columnTodoTitle: title,
+      DatabaseHelperTodos.columnPriority: priorities,
+      DatabaseHelperTodos.columnStatus: status,
     };
-    final rowsAffected = await dbHelperTask.update(row);
+    final rowsAffected = await dbHelperTodo.update(row);
     print('updated $rowsAffected row(s)');
   }
 

@@ -36,8 +36,7 @@ class _TaskTabState extends State<TaskTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.date,
+                    Text("Created on ${widget.date}",
                       style: ktaskTabDateStyle,
                     ),
                     SizedBox(
